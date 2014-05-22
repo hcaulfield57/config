@@ -1,0 +1,50 @@
+#!/bin/rc
+# cpu server start up
+date > /env/boottime
+
+# mount points
+mntgen -s slashn && chmod 666 /srv/slashn
+
+# name translation, cs sets /dev/sysname
+ndb/cs
+sysname=`{cat /dev/sysname}
+
+# parallelism for mk
+NPROC = `{wc -l </dev/sysstat}
+
+prompt=($sysname^'# ' '	')
+
+# cpu-specific startup
+if(test -e /cfg/$sysname/cpurc)
+	. /cfg/$sysname/cpurc
+
+# start up internet if we don't already have an address
+if(! grep u /net/ipselftab | grep -sv 127.0.0.1)
+	ip/ipconfig
+if(! grep -s 127.0.0.1 /net/ipselftab)
+	ip/ipconfig loopback /dev/null 127.1
+
+# if we're not a server, start a dns resolver
+if(! test -e /srv/dns)
+	ndb/dns -r
+
+rm -f '#¤/caphash'
+
+if(! ps|grep -s timesync) {
+	aux/timesync -n pool.ntp.org
+	if (test -e '#r/rtc') @ {
+		sleep 10			# let timesync correct the time
+		awk '{print $1}' /dev/time >'#r/rtc'	# fix hw clock
+	} &
+}
+
+# cpu-specific late startup
+if(test -e /cfg/$sysname/cpustart)
+	. /cfg/$sysname/cpustart
+
+# mode of /proc/*/ctl is inherited across rfork, and sets modes on
+# other /proc files, such as note, so let listen be killed.
+dontkill '^(ipconfig|factotum|mntgen|venti|fossil|cs|dns|reboot)$'
+
+# echo `{date} $sysname >>/sys/log/boot
+exit ''

@@ -1,0 +1,21 @@
+database=
+	file=/lib/ndb/local
+	file=/lib/ndb/common
+
+auth=sources.cs.bell-labs.com authdom=outside.plan9.bell-labs.com
+
+ip=127.0.0.1 sys=localhost dom=localhost
+
+# homenet
+ipnet=homenet ip=192.168.1.0 ipmask=255.255.255.0
+	auth=riolu
+	cpu=riolu
+	dns=8.8.8.8
+	dnsdom=example.com
+	fs=riolu
+	venti=saigo
+
+authdom=example.com auth=riolu
+
+sys=riolu ip=192.168.1.3 dom=riolu.example.com
+sys=saigo ip=192.168.1.2 dom=saigo.example.com

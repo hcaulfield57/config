@@ -1,0 +1,5 @@
+#!/bin/rc
+# riolu cpustart
+
+# cpu/auth listeners
+aux/listen -q -t /rc/bin/service.auth -d /rc/bin/service tcp

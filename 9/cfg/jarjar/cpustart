@@ -1,0 +1,6 @@
+#!/bin/rc
+# jarjar cpustart
+
+# cpu listeners
+aux/listen -q -d /rc/bin/service tcp
+

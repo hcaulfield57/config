@@ -1,0 +1,10 @@
+#!/bin/rc
+# riolu cpurc
+
+# network
+ip/ipconfig -g 192.168.1.1 ether /net/ether0 192.168.1.3 255.255.255.0
+
+# auth
+auth/keyfs -wp -m /mnt/keys /adm/keys >/dev/null >[2=1]
+auth/cron >>/sys/log/cron >[2=1] &
+auth/secstored
